@@ -1,0 +1,23 @@
+<!--
+  Custom Wazuh rules for my home lab.
+  Location on the Wazuh server: /var/ossec/etc/rules/local_rules.xml
+  Custom rule IDs must be in the 100000-120000 range.
+  After editing:  sudo systemctl restart wazuh-manager
+
+  NOTE: 5760 is the built-in "sshd: authentication failed" rule.
+  Confirm it by opening one of your SSH failure alerts in the dashboard
+  and checking rule.id. If it differs, use that ID below.
+-->
+<group name="local,homelab,authentication_failures,">
+
+  <!-- 5 or more failed SSH logins from the same IP within 60 seconds -->
+  <rule id="100100" level="12" frequency="5" timeframe="60">
+    <if_matched_sid>5760</if_matched_sid>
+    <same_source_ip />
+    <description>Homelab: SSH brute force - 5+ failed logins from $(srcip) in 60s</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+
+</group>
